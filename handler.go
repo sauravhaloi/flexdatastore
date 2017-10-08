@@ -66,13 +66,13 @@ func GetValHandler(ctx context.Context, w http.ResponseWriter, r *http.Request, 
 		log.Println(err)
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusNotFound)
+	} else {
+		j, err := json.Marshal(objs)
+		if err != nil {
+			panic(err)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(j)
 	}
-
-	j, err := json.Marshal(objs)
-	if err != nil {
-		panic(err)
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(j)
 }
