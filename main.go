@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/gorilla/mux"
+	"google.golang.org/appengine"
 )
 
 const keyKind = "flexstore"
@@ -15,13 +16,15 @@ func main() {
 
 	var err error
 
-	// check if GOOGLE_APPLICATION_CREDENTIALS is set in the environment
-	appCred := os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")
-	if appCred == "" {
-		log.Fatalf(`Error: environment variable GOOGLE_APPLICATION_CREDENTIALS is not set,
-			please refer https://cloud.google.com/docs/authentication/getting-started 
-			to setup authentication for your application`)
-		os.Exit(-1)
+	// check if GOOGLE_APPLICATION_CREDENTIALS is set in the local environment
+	if appengine.IsDevAppServer() {
+		appCred := os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")
+		if appCred == "" {
+			log.Fatalf(`Error: environment variable GOOGLE_APPLICATION_CREDENTIALS is not set,
+				please refer https://cloud.google.com/docs/authentication/getting-started 
+				to setup authentication for your application`)
+			os.Exit(-1)
+		}
 	}
 
 	// retrieve the Google Project ID from environment
@@ -42,6 +45,9 @@ func main() {
 
 	// setup the HTTP routes and handlers
 	r := mux.NewRouter().StrictSlash(false)
+	r.HandleFunc("/", DefaultHandler)
+	r.HandleFunc("/liveness_check", LivenessCheckHandler)
+
 	r.HandleFunc("/save", func(w http.ResponseWriter, r *http.Request) {
 		PostValHandler(ctx, w, r, dsClient)
 	}).Methods("GET")
