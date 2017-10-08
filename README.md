@@ -27,7 +27,7 @@ The application runs by default at port 8080
 
 $ ./flexstore
 
-2017/10/08 13:12:40 Successfully connected to Google Cloud Datastore for project api-project-238226145166
+2017/10/08 13:12:40 Successfully connected to Google Cloud Datastore for project xxx-yyy-zzz
 
 2017/10/08 13:12:40 Flexstore is now serving RESTfully [port :8080]...
 
