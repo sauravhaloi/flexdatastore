@@ -9,7 +9,11 @@ import (
 	"github.com/gorilla/mux"
 )
 
+const keyKind = "flexstore"
+
 func main() {
+
+	var err error
 
 	// check if GOOGLE_APPLICATION_CREDENTIALS is set in the environment
 	appCred := os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")
@@ -51,5 +55,8 @@ func main() {
 		Handler: r,
 	}
 	log.Printf("Flexstore is now serving RESTfully [port %s]...", server.Addr)
-	server.ListenAndServe()
+	if err = server.ListenAndServe(); err != nil {
+		log.Println(err)
+		dsClient.client.Close()
+	}
 }
